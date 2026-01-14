@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Moviefilix77 — Updated</title>
+<style>
+/* ---------- Base ---------- */
+:root{
+  --bg:#000;
+  --panel:#0d0d0d;
+  --muted:#aaa;
+  --accent:#e53935;
+  --card:#111;
+}
+*{box-sizing:border-box}
+html,body{height:100%;}
+body{
+  margin:0;
+  font-family:Inter,system-ui,Arial,sans-serif;
+  background:var(--bg);
+  color:#fff;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+}
+
+/* ---------- Header ---------- */
+.header{
+  width:100%;
+  padding:16px 18px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  background:rgba(0,0,0,0.6);
+  position:fixed;
+  top:0;
+  z-index:1000;
+  border-bottom:1px solid rgba(255,255,255,0.03);
+}
+.logo{
+  font-size:22px;
+  font-weight:700;
+  color:var(--accent);
+  cursor:pointer;
+}
+.header-right{display:flex;align-items:center;gap:8px;}
+.profile-icon{
+  width:38px;height:38px;border-radius:50%;
+  background:var(--accent);display:flex;justify-content:center;align-items:center;
+  font-weight:700;font-size:16px;cursor:pointer; margin-right:6px;
+}
+
+/* ---------- Top Buttons / Banner ---------- */
+.container{padding-top:84px;padding-bottom:80px;}
+.top-buttons{
+  display:flex;gap:10px;padding:10px 16px;
+  flex-wrap:wrap;
+}
+.top-buttons button{
+  padding:8px 14px;background:transparent;border:1px solid #333;border-radius:24px;color:#fff;cursor:pointer;
+}
+
+/* Banner */
+.banner{
+  margin:12px 16px;border-radius:12px;overflow:hidden;position:relative;background:#111;
+  display:flex;gap:16px;align-items:center;padding:14px;
+}
+.banner img{width:220px;height:120px;object-fit:cover;border-radius:8px;}
+.banner-info{flex:1;}
+.banner-title{font-size:22px;font-weight:700;margin-bottom:6px}
+.banner-tags{opacity:0.8;margin-bottom:8px}
+.banner-buttons{display:flex;gap:10px}
+.banner-buttons button{padding:10px 16px;border-radius:8px;border:none;cursor:pointer}
+.play-btn{background:#fff;color:#000}
+.list-btn{background:#333;color:#fff}
+
+/* ---------- Sections ---------- */
+.section-title{margin:18px 16px;font-size:18px;font-weight:700}
+.row{
+  display:flex;overflow-x:auto;gap:10px;padding:10px 16px;
+}
+.movie-item{
+  min-width:120px;background:var(--card);border-radius:8px;overflow:hidden;cursor:pointer;position:relative;
+  flex:0 0 auto;
+}
+.movie-item img.thumb{width:100%;height:160px;object-fit:cover;display:block}
+.overlay-logo{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:56px;opacity:0.6;pointer-events:none}
+
+/* ---------- Pages ---------- */
+.page{display:none;padding-top:6px;}
+.page.active{display:block;padding-bottom:80px}
+
+/* ---------- Player ---------- */
+#player video{width:100%;max-height:60vh;background:#000}
+.player-controls{display:flex;gap:12px;align-items:center;padding:10px 16px}
+.player-controls select{padding:6px;border-radius:6px;background:#111;border:1px solid #222;color:#fff}
+
+/* description */
+#movieDescription{padding:10px 16px;color:var(--muted)}
+
+/* season/episode */
+.season-ep{display:flex;gap:10px;padding:8px 16px;flex-wrap:wrap}
+
+/* ---------- Settings ---------- */
+.settings-page{padding:10px 16px}
+.settings-page select, .settings-page button{padding:10px;border-radius:8px;border:none;background:var(--accent);color:#fff}
+
+/* ---------- Modal ---------- */
+.modal{
+  display:none;position:fixed;top:0;left:0;width:100%;height:100%;
+  background:rgba(0,0,0,0.7);justify-content:center;align-items:center;z-index:3000;
+}
+.modal .modal-content{
+  width:94%;max-width:480px;background:#111;border-radius:10px;padding:20px;position:relative;
+}
+.modal h2{margin:8px 0}
+.modal input[type="email"], .modal input[type="password"], .modal input[type="text"]{
+  width:100%;padding:10px;margin:8px 0;border-radius:6px;border:1px solid #222;background:#0b0b0b;color:#fff;
+}
+.modal .row-between{display:flex;justify-content:space-between;align-items:center}
+.modal .remember{display:flex;align-items:center;gap:8px}
+.modal .remember input{transform:scale(1.1)}
+.modal .right-btn{background:transparent;border:none;color:var(--muted);cursor:pointer}
+
+/* logged-in view */
+#loggedInView{display:none;padding:8px 0}
+#userEmailDisplay{font-weight:600}
+
+/* close */
+.close-modal{position:absolute;right:12px;top:8px;font-size:20px;cursor:pointer}
+
+/* ---------- Admin Panel ---------- */
+.admin-panel{padding:12px 16px;background:#0b0b0b;border-top:1px solid #222;margin-top:12px;border-radius:8px 8px 0 0}
+.admin-panel input[type="text"],.admin-panel input[type="file"],.admin-panel textarea, .admin-panel select{
+  width:100%;padding:8px;margin:6px 0;border-radius:6px;background:#0b0b0b;border:1px solid #222;color:#fff;
+}
+.admin-panel button{padding:10px;border-radius:6px;border:none;background:var(--accent);color:#fff;cursor:pointer}
+
+/* ---------- Bottom Nav ---------- */
+.bottom-nav{
+  position:fixed;bottom:0;width:100%;background:var(--panel);display:flex;justify-content:space-around;padding:10px 0;border-top:1px solid #222;z-index:2000;
+}
+.nav-item{text-align:center;font-size:12px;opacity:0.9;color:#fff;cursor:pointer}
+.nav-m{font-size:28px;color:var(--accent);font-weight:700}
+
+/* ---------- Responsive ---------- */
+@media(max-width:767px){
+  .banner{flex-direction:column;align-items:flex-start}
+  .banner img{width:100%;height:160px}
+  .movie-item img.thumb{height:120px}
+  .player-controls{flex-wrap:wrap}
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo" onclick="showPage('main')">Moviefilix77</div>
+  <div class="header-right">
+    <div class="profile-icon" onclick="openModal()">👤</div>
+  </div>
+</div>
+
+<div class="container">
+  <!-- Main Page -->
+  <div id="main" class="page active">
+    <div class="top-buttons">
+      <button onclick="showPage('series')">TV Shows</button>
+      <button onclick="showPage('movies')">Movies</button>
+      <button onclick="alert('Categories Coming Soon')">Categories</button>
+    </div>
+
+    <!-- Banner (acts as main movie) -->
+    <div id="homeBanner" class="banner">
+      <img id="bannerThumb" src="thumbs/banner.jpg" alt="Banner">
+      <div class="banner-info">
+        <div class="banner-title" id="bannerTitle">STRANGER THINGS</div>
+        <div class="banner-tags" id="bannerTags">Drama • Sci-Fi • Teen • US TV • Horror</div>
+        <div class="banner-buttons">
+          <button class="play-btn" onclick="playFromBanner()">▶ Play</button>
+          <button class="list-btn" onclick="addToList('banner')">＋ My List</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-title">Trending</div>
+    <div id="trendingRow" class="row"></div>
+
+    <div class="section-title">Watch Again</div>
+    <div id="watchRow" class="row"></div>
+
+    <!-- Admin quick panel (hidden unless admin logged in) -->
+    <div id="adminPanel" class="admin-panel" style="display:none">
+      <h3>Admin: Add Movie/Series / Set Banner</h3>
+      <label>Type</label>
+      <select id="adminType">
+        <option value="movie">Movie</option>
+        <option value="series">Series</option>
+      </select>
+      <label>Title</label>
+      <input id="adminTitle" type="text" placeholder="Title">
+      <label>Thumb (optional)</label>
+      <input id="adminThumb" type="file" accept="image/*">
+      <label>Video base name (for movie) — e.g. 'dude' (files: videos/dude-480.mp4 etc)</label>
+      <input id="adminVideoBase" type="text" placeholder="video base name">
+      <div id="seriesInputs" style="display:none">
+        <label>Seasons JSON (array of episodes):</label>
+        <textarea id="adminSeasons" rows="4" placeholder='Example: [["ep1","ep2"],["s2ep1","s2ep2"]]' ></textarea>
+      </div>
+      <label>Description</label>
+      <textarea id="adminDesc" rows="2" placeholder="Short description"></textarea>
+      <button onclick="adminAdd()">Add</button>
+
+      <hr style="border-color:#222;margin:12px 0">
+      <h4>Set Banner</h4>
+      <input id="bannerFile" type="file" accept="image/*">
+      <input id="bannerMovieBase" type="text" placeholder="banner movie base name (for play)" />
+      <button onclick="setBanner()">Set Banner</button>
+      <p style="opacity:0.8;font-size:12px">Media uploaded via admin stored locally (data URLs) in your browser localStorage.</p>
+    </div>
+  </div>
+
+  <!-- Settings Page -->
+  <div id="settings" class="page settings-page">
+    <h2>Video Quality</h2>
+    <select id="videoQuality">
+      <option value="480">480p</option>
+      <option value="720">720p</option>
+      <option value="1080">1080</option>
+    </select>
+    <button onclick="saveSettings()">Save</button>
+
+    <h2 style="margin-top:18px;">Download Our App</h2>
+    <button onclick="alert('Download coming soon')">Download</button>
+  </div>
+
+  <!-- Movies Page -->
+  <div id="movies" class="page">
+    <h2 style="padding-left:16px;">Movies</h2>
+    <div id="moviesRow" class="row"></div>
+  </div>
+
+  <!-- Series Page -->
+  <div id="series" class="page">
+    <h2 style="padding-left:16px;">Series</h2>
+    <div id="seriesRow" class="row"></div>
+  </div>
+
+  <!-- Player Page -->
+  <div id="player" class="page">
+    <video id="videoPlayer" controls>
+      <source id="videoSource" src="" type="video/mp4">
+      Your browser does not support HTML5 video.
+    </video>
+
+    <div class="player-controls">
+      <div>
+        <strong id="movieTitle">TITLE</strong>
+      </div>
+      <div style="flex:1"></div>
+      <div>
+        <label>Quality: </label>
+        <select id="playerQuality" onchange="changeQuality()">
+          <option value="480">480p</option>
+          <option value="720">720p</option>
+          <option value="1080">1080p</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="season-ep" id="seasonEpControls" style="display:none">
+      <div>
+        <label>Season: </label>
+        <select id="seasonSelect" onchange="selectSeason()"></select>
+      </div>
+      <div>
+        <label>Episode: </label>
+        <select id="episodeSelect" onchange="selectEpisode()"></select>
+      </div>
+    </div>
+
+    <p id="movieDescription">Description will appear here.</p>
+  </div>
+</div>
+
+<!-- Modal Login/Signup -->
+<div id="loginModal" class="modal" onclick="modalBackgroundClick(event)">
+  <div class="modal-content" id="modalContent">
+    <span class="close-modal" onclick="closeModal()">×</span>
+
+    <!-- Logged in view -->
+    <div id="loggedInView">
+      <p id="userEmailDisplay"></p>
+      <button onclick="logout()">Logout</button>
+    </div>
+
+    <!-- Login form -->
+    <div id="loginForm">
+      <h2>Login</h2>
+      <input id="loginEmail" type="email" placeholder="Email">
+      <input id="loginPassword" type="password" placeholder="Password">
+      <div class="row-between">
+        <label class="remember"><input id="rememberMe" type="checkbox"> Remember Me</label>
+        <button class="right-btn" onclick="showForgot()">Forgot Password?</button>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:10px">
+        <button style="flex:1;background:var(--accent);border:none;padding:10px;border-radius:6px" onclick="doLogin()">Log In</button>
+        <button style="flex:1;background:#333;border:none;padding:10px;border-radius:6px" onclick="showSignup()">Sign Up</button>
+      </div>
+      <div style="margin-top:8px"><small style="opacity:0.7">Admin? login with admin@moviefilix.com</small></div>
+    </div>
+
+    <!-- Signup -->
+    <div id="signupForm" style="display:none">
+      <h2>Sign Up</h2>
+      <input id="signupEmail" type="email" placeholder="Email">
+      <input id="signupPassword" type="password" placeholder="Password">
+      <div style="display:flex;gap:8px;margin-top:10px">
+        <button style="flex:1;background:var(--accent);border:none;padding:10px;border-radius:6px" onclick="startSignup()">Next</button>
+        <button style="flex:1;background:#333;border:none;padding:10px;border-radius:6px" onclick="showLogin()">Back</button>
+      </div>
+    </div>
+
+    <!-- Verification -->
+    <div id="verificationForm" style="display:none">
+      <h2>Email Verification</h2>
+      <p id="verifyNote" style="opacity:0.8"></p>
+      <input id="verificationCode" type="text" placeholder="Enter Code">
+      <button style="width:100%;margin-top:8px" onclick="completeSignup()">Verify & Sign Up</button>
+    </div>
+
+    <!-- Forgot -->
+    <div id="forgotForm" style="display:none">
+      <h2>Forgot Password</h2>
+      <input id="forgotEmail" type="email" placeholder="Enter your email">
+      <button style="width:100%;margin-top:8px" onclick="sendReset()">Send Verification Code</button>
+    </div>
+
+    <!-- Reset -->
+    <div id="resetForm" style="display:none">
+      <h2>Reset Password</h2>
+      <p style="opacity:0.8" id="resetNote"></p>
+      <input id="resetCode" type="text" placeholder="Enter Verification Code">
+      <input id="newPassword" type="password" placeholder="New Password">
+      <button style="width:100%;margin-top:8px" onclick="completeReset()">Reset Password</button>
+    </div>
+
+  </div>
+</div>
+
+<!-- Bottom Navigation -->
+<div class="bottom-nav">
+  <div class="nav-item" onclick="showPage('main')">🏠<br>Home</div>
+  <div class="nav-item" onclick="showPage('series')">📺<br>Series</div>
+  <div class="nav-item nav-m" onclick="showPage('main')">M</div>
+  <div class="nav-item" onclick="showPage('movies')">🎬<br>Movies</div>
+  <div class="nav-item" onclick="showPage('settings')">⚙️<br>Setting</div>
+</div>
+
+<script>
+/* ----------------- Data & State ----------------- */
+const ADMIN_EMAIL = "admin@moviefilix.com";
+const ADMIN_PASS = "admin123";
+
+let loggedInUser = null;
+let localUsers = {}; // email -> {password:..., remember:bool}
+let verificationStore = {}; // temp store for codes {email:code}
+let mediaDB = loadJSON('mediaDB') || {
+  banner: {title:'STRANGER THINGS', tags:'Drama • Sci-Fi • Teen • US TV • Horror', thumb:'thumbs/banner.jpg', base:'strangerthings', desc:'A popular show.'},
+  trending: [
+    {type:'movie', title:'DUDE', thumb:'thumbs/dude.jpg', base:'dude', desc:'A cool movie'},
+    {type:'movie', title:'FAMILY MAN', thumb:'thumbs/familyman.jpg', base:'familyman', desc:'Action thriller'}
+  ],
+  watch: [
+    {type:'series', title:'TROLLS', thumb:'thumbs/troll.jpg', base:'troll', desc:'Funny series', seasons:[['trolls-s1e1','trolls-s1e2']]}
+  ],
+  movies: [],
+  series: []
+};
+
+// load saved users
+if(localStorage.getItem('localUsers')) localUsers = JSON.parse(localStorage.getItem('localUsers'));
+
+// UI init
+document.addEventListener('DOMContentLoaded', ()=>{
+  renderRows();
+  restoreBanner();
+  restoreSettingsToPlayer();
+  updateModalView();
+});
+
+/* ---------- Helper: localStorage JSON ---------- */
+function saveJSON(key,obj){ localStorage.setItem(key, JSON.stringify(obj)); }
+function loadJSON(key){ try{ return JSON.parse(localStorage.getItem(key)); }catch(e){return null;} }
+
+/* ---------- Pages ---------- */
+function showPage(id){
+  const pages=['main','settings','movies','series','player'];
+  pages.forEach(p=>document.getElementById(p).classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  if(id==='player'){ document.getElementById('videoPlayer').scrollIntoView({behavior:'smooth'}); }
+}
+
+/* ---------- Modal control ---------- */
+function openModal(){ document.getElementById('loginModal').style.display='flex'; updateModalView(); }
+function closeModal(){ document.getElementById('loginModal').style.display='none'; }
+function modalBackgroundClick(e){ if(e.target.id==='loginModal') closeModal(); }
+
+/* Update modal view depending on login */
+function updateModalView(){
+  if(loggedInUser){
+    document.getElementById('loggedInView').style.display='block';
+    document.getElementById('loginForm').style.display='none';
+    document.getElementById('signupForm').style.display='none';
+    document.getElementById('verificationForm').style.display='none';
+    document.getElementById('forgotForm').style.display='none';
+    document.getElementById('resetForm').style.display='none';
+    document.getElementById('userEmailDisplay').innerText = loggedInUser;
+    // show admin panel if admin
+    if(loggedInUser === ADMIN_EMAIL) document.getElementById('adminPanel').style.display='block';
+    else document.getElementById('adminPanel').style.display='none';
+  } else {
+    // default show login
+    document.getElementById('loggedInView').style.display='none';
+    showLogin();
+    document.getElementById('adminPanel').style.display='none';
+  }
+}
+function showLogin(){ document.getElementById('loginForm').style.display='block'; document.getElementById('signupForm').style.display='none'; document.getElementById('verificationForm').style.display='none'; document.getElementById('forgotForm').style.display='none'; document.getElementById('resetForm').style.display='none'; }
+function showSignup(){ document.getElementById('loginForm').style.display='none'; document.getElementById('signupForm').style.display='block'; document.getElementById('verificationForm').style.display='none'; document.getElementById('forgotForm').style.display='none'; document.getElementById('resetForm').style.display='none'; }
+function showForgot(){ document.getElementById('loginForm').style.display='none'; document.getElementById('signupForm').style.display='none'; document.getElementById('verificationForm').style.display='none'; document.getElementById('forgotForm').style.display='block'; document.getElementById('resetForm').style.display='none'; }
+function showReset(){ document.getElementById('loginForm').style.display='none'; document.getElementById('signupForm').style.display='none'; document.getElementById('verificationForm').style.display='none'; document.getElementById('forgotForm').style.display='none'; document.getElementById('resetForm').style.display='block'; }
+
+/* ---------- Auth (local simulation) ---------- */
+function doLogin(){
+  const email=document.getElementById('loginEmail').value.trim();
+  const pass=document.getElementById('loginPassword').value;
+  const remember = document.getElementById('rememberMe').checked;
+  if(!email || !pass){ alert('Enter email and password'); return; }
+
+  // admin shortcut
+  if(email === ADMIN_EMAIL && pass === ADMIN_PASS){
+    loggedInUser = ADMIN_EMAIL;
+    if(remember) localStorage.setItem('remembered', loggedInUser);
+    alert('Admin logged in: '+email);
+    closeModal(); updateModalView(); return;
+  }
+
+  // normal user check
+  if(localUsers[email] && localUsers[email].password === pass){
+    loggedInUser = email;
+    if(remember) localStorage.setItem('remembered', loggedInUser);
+    alert('Logged in as '+email);
+    closeModal(); updateModalView(); return;
+  } else {
+    alert('No such user or wrong password. You can sign up.');
+  }
+}
+function logout(){
+  loggedInUser = null;
+  localStorage.removeItem('remembered');
+  updateModalView();
+  alert('Logged out');
+}
+
+/* --------- Signup flow (simulate verification) --------- */
+let pendingSignup = null;
+function startSignup(){
+  const email = document.getElementById('signupEmail').value.trim();
+  const pass = document.getElementById('signupPassword').value;
+  if(!email || !pass){ alert('Enter email and password'); return; }
+  if(localUsers[email]){ alert('User already exists. Please login.'); return; }
+  // generate code
+  const code = (Math.floor(Math.random()*900000)+100000).toString();
+  verificationStore[email] = code;
+  pendingSignup = {email, password:pass};
+  document.getElementById('verifyNote').innerText = `Verification code sent to ${email}. (Simulated: ${code})`;
+  // show verification
+  document.getElementById('signupForm').style.display='none';
+  document.getElementById('verificationForm').style.display='block';
+}
+function completeSignup(){
+  const code = document.getElementById('verificationCode').value.trim();
+  if(!pendingSignup){ alert('No signup in progress'); return; }
+  const real = verificationStore[pendingSignup.email];
+  if(code === real){
+    localUsers[pendingSignup.email] = {password: pendingSignup.password};
+    localStorage.setItem('localUsers', JSON.stringify(localUsers));
+    loggedInUser = pendingSignup.email;
+    delete verificationStore[pendingSignup.email];
+    pendingSignup = null;
+    alert('Account created and logged in!');
+    closeModal(); updateModalView();
+  } else alert('Wrong code');
+}
+
+/* ---------- Forgot / Reset ---------- */
+let resetTarget = null;
+function sendReset(){
+  const email = document.getElementById('forgotEmail').value.trim();
+  if(!email){ alert('Enter email'); return; }
+  if(!localUsers[email] && email !== ADMIN_EMAIL){ alert('No user with that email'); return; }
+  const code = (Math.floor(Math.random()*900000)+100000).toString();
+  verificationStore[email] = code;
+  resetTarget = email;
+  document.getElementById('resetNote').innerText = `Verification code sent to ${email} (Simulated: ${code})`;
+  showReset();
+}
+function completeReset(){
+  const code = document.getElementById('resetCode').value.trim();
+  const newPass = document.getElementById('newPassword').value;
+  if(!resetTarget){ alert('No reset requested'); return; }
+  if(verificationStore[resetTarget] !== code){ alert('Wrong code'); return; }
+  if(resetTarget === ADMIN_EMAIL){
+    // change admin pass? For demo we won't change ADMIN_PASS constant, just notify
+    alert('Admin password cannot be reset here in demo.');
+    delete verificationStore[resetTarget];
+    resetTarget = null;
+    closeModal();
+    return;
+  }
+  localUsers[resetTarget].password = newPass;
+  localStorage.setItem('localUsers', JSON.stringify(localUsers));
+  delete verificationStore[resetTarget];
+  resetTarget = null;
+  alert('Password reset successful! Please login with new password.');
+  showLogin();
+}
+
+/* ---------- Render rows ---------- */
+function renderRows(){
+  // banner
+  const b = mediaDB.banner;
+  if(b){
+    document.getElementById('bannerTitle').innerText = b.title || '';
+    document.getElementById('bannerTags').innerText = b.tags || '';
+    if(b.thumb) document.getElementById('bannerThumb').src = b.thumb;
+  }
+
+  // trending
+  const trendingRow = document.getElementById('trendingRow');
+  trendingRow.innerHTML = '';
+  mediaDB.trending.forEach((m, idx)=>{
+    const item = createThumbElement(m, idx, 'trending');
+    trendingRow.appendChild(item);
+  });
+
+  // watch
+  const watchRow = document.getElementById('watchRow');
+  watchRow.innerHTML = '';
+  mediaDB.watch.forEach((m, idx)=>{
+    const item = createThumbElement(m, idx, 'watch');
+    watchRow.appendChild(item);
+  });
+
+  // movies & series lists
+  const moviesRow = document.getElementById('moviesRow');
+  moviesRow.innerHTML = '';
+  mediaDB.movies.forEach((m,idx)=> moviesRow.appendChild(createThumbElement(m, idx, 'movies')));
+
+  const seriesRow = document.getElementById('seriesRow');
+  seriesRow.innerHTML = '';
+  mediaDB.series.forEach((s,idx)=> seriesRow.appendChild(createThumbElement(s, idx, 'series')));
+
+  saveJSON('mediaDB', mediaDB);
+}
+
+function createThumbElement(item, idx, section){
+  const div = document.createElement('div');
+  div.className = 'movie-item';
+  const img = document.createElement('img');
+  img.className = 'thumb';
+  img.src = item.thumb || 'thumbs/default.jpg';
+  div.appendChild(img);
+
+  // overlay logo sample (if any logo stored globally)
+  // label or click
+  div.onclick = ()=> {
+    // play directly: if series -> open series player
+    if(item.type === 'series' || section==='series'){
+      openSeriesPlayer(item);
+    } else {
+      playMovieByItem(item);
+    }
+  };
+  return div;
+}
+
+/* ---------- Play logic ---------- */
+let currentPlaying = null; // item: {type:'movie'|'series', base, seasons?, title, desc}
+function playFromBanner(){
+  const b = mediaDB.banner;
+  if(!b) return;
+  if(b.type==='series') openSeriesPlayer(b);
+  else playMovieByItem(b);
+}
+
+function playMovieByItem(item){
+  currentPlaying = Object.assign({}, item);
+  // choose quality: from settings or player dropdown
+  const savedQ = localStorage.getItem('videoQuality') || '480';
+  document.getElementById('playerQuality').value = savedQ;
+  document.getElementById('movieTitle').innerText = item.title || (item.base||'Unknown').toUpperCase();
+  document.getElementById('movieDescription').innerText = item.desc || '';
+  document.getElementById('seasonEpControls').style.display = 'none';
+  document.getElementById('episodeSelect').innerHTML = '';
+  // set source path pattern: using base + '-' + quality + '.mp4'
+  const qual = document.getElementById('playerQuality').value;
+  const src = resolveVideoSrc(item.base, qual);
+  setVideoSource(src);
+  showPage('player');
+}
+
+function openSeriesPlayer(item){
+  // item should have seasons array like [['s1e1','s1e2'], ['s2e1']]
+  currentPlaying = Object.assign({}, item);
+  document.getElementById('movieTitle').innerText = item.title || item.base;
+  document.getElementById('movieDescription').innerText = item.desc || '';
+  document.getElementById('seasonEpControls').style.display = 'flex';
+
+  // populate seasons
+  const seasonSelect = document.getElementById('seasonSelect');
+  seasonSelect.innerHTML = '';
+  const seasons = item.seasons || [];
+  for(let i=0;i<seasons.length;i++){
+    const opt = document.createElement('option');
+    opt.value = i;
+    opt.innerText = 'Season '+(i+1);
+    seasonSelect.appendChild(opt);
+  }
+  // default season 0
+  selectSeason();
+  const savedQ = localStorage.getItem('videoQuality') || '480';
+  document.getElementById('playerQuality').value = savedQ;
+  showPage('player');
+}
+
+function selectSeason(){
+  const idx = parseInt(document.getElementById('seasonSelect').value||0);
+  const eps = (currentPlaying.seasons && currentPlaying.seasons[idx]) || [];
+  const episodeSelect = document.getElementById('episodeSelect');
+  episodeSelect.innerHTML = '';
+  eps.forEach((ep, i)=>{
+    const o = document.createElement('option'); o.value=i; o.innerText = 'Episode '+(i+1); episodeSelect.appendChild(o);
+  });
+  // default play first episode
+  selectEpisode();
+}
+
+function selectEpisode(){
+  const sIdx = parseInt(document.getElementById('seasonSelect').value||0);
+  const eIdx = parseInt(document.getElementById('episodeSelect').value||0);
+  const epBase = currentPlaying.seasons[sIdx][eIdx];
+  const qual = document.getElementById('playerQuality').value || (localStorage.getItem('videoQuality')||'480');
+  const src = resolveVideoSrc(epBase, qual);
+  setVideoSource(src);
+}
+
+/* Build a source string - this is convention: videos/<base>-<quality>.mp4
+   If admin uploaded data URL for base, we allow direct base (data URL) */
+function resolveVideoSrc(base, quality){
+  if(!base) base = 'sample';
+  // if base looks like data: or starts with http -> return base
+  if(base.startsWith('data:') || base.startsWith('http')) return base;
+  // if base already contains quality suffix, return as-is (convenience)
+  if(base.includes('-480')||base.includes('-720')||base.includes('-1080')) return 'videos/'+base+'.mp4';
+  return 'videos/'+base+'-'+quality+'.mp4';
+}
+
+function setVideoSource(src){
+  const video = document.getElementById('videoPlayer');
+  const source = document.getElementById('videoSource');
+  source.src = src;
+  video.load();
+  // autoplay
+  setTimeout(()=>video.play().catch(()=>{}), 300);
+}
+
+/* change quality while playing */
+function changeQuality(){
+  const q = document.getElementById('playerQuality').value;
+  // if series: compute current ep base
+  if(currentPlaying && (currentPlaying.type==='series' || currentPlaying.seasons)){
+    const sIdx = parseInt(document.getElementById('seasonSelect').value||0);
+    const eIdx = parseInt(document.getElementById('episodeSelect').value||0);
+    const epBase = currentPlaying.seasons[sIdx][eIdx];
+    const src = resolveVideoSrc(epBase, q);
+    setVideoSource(src);
+  } else if(currentPlaying){
+    const src = resolveVideoSrc(currentPlaying.base, q);
+    setVideoSource(src);
+  }
+}
+
+/* ---------- Settings ---------- */
+function saveSettings(){
+  const q = document.getElementById('videoQuality').value;
+  localStorage.setItem('videoQuality', q);
+  alert('Video quality set to '+q+'p');
+  // update player dropdown
+  document.getElementById('playerQuality').value = q;
+}
+function restoreSettingsToPlayer(){
+  const q = localStorage.getItem('videoQuality') || '480';
+  document.getElementById('videoQuality').value = q;
+  document.getElementById('playerQuality').value = q;
+}
+
+/* ---------- Add to list (user feature) ---------- */
+function addToList(which){
+  if(!loggedInUser){ alert('Please login to add to My List'); openModal(); return; }
+  alert('Added to your list (demo)');
+}
+
+/* ---------- Admin functions ---------- */
+function adminAdd(){
+  if(!loggedInUser || loggedInUser !== ADMIN_EMAIL){ alert('Admin only'); return; }
+  const type = document.getElementById('adminType').value;
+  const title = document.getElementById('adminTitle').value.trim();
+  const desc = document.getElementById('adminDesc').value.trim();
+  const base = document.getElementById('adminVideoBase').value.trim();
+  const thumbFile = document.getElementById('adminThumb').files[0];
+
+  if(!title){ alert('Provide title'); return; }
+  // process thumb file
+  if(thumbFile){
+    const reader = new FileReader();
+    reader.onload = function(e){
+      const dataUrl = e.target.result;
+      commitAdd(type, title, base, dataUrl, desc);
+    };
+    reader.readAsDataURL(thumbFile);
+  } else {
+    commitAdd(type, title, base, null, desc);
+  }
+}
+
+function commitAdd(type,title,base,thumb,desc){
+  const obj = {type, title, base, desc};
+  if(thumb) obj.thumb = thumb;
+  if(type==='movie'){
+    mediaDB.trending.unshift(obj);
+    mediaDB.movies.unshift(obj);
+  } else {
+    // parse seasons input
+    const seasonsText = document.getElementById('adminSeasons').value.trim();
+    try{
+      obj.seasons = seasonsText ? JSON.parse(seasonsText) : [[]];
+    }catch(e){ obj.seasons = [[]]; }
+    mediaDB.watch.unshift(obj);
+    mediaDB.series.unshift(obj);
+  }
+  saveJSON('mediaDB', mediaDB);
+  renderRows();
+  alert('Added '+type);
+}
+
+/* set banner from admin */
+function setBanner(){
+  if(!loggedInUser || loggedInUser !== ADMIN_EMAIL){ alert('Admin only'); return; }
+  const file = document.getElementById('bannerFile').files[0];
+  const base = document.getElementById('bannerMovieBase').value.trim();
+  if(file){
+    const r = new FileReader();
+    r.onload = function(e){
+      mediaDB.banner.thumb = e.target.result;
+      if(base) mediaDB.banner.base = base;
+      saveJSON('mediaDB', mediaDB);
+      restoreBanner();
+      alert('Banner set');
+    };
+    r.readAsDataURL(file);
+  } else {
+    if(base){ mediaDB.banner.base = base; saveJSON('mediaDB', mediaDB); alert('Banner base set'); }
+    else alert('Choose file or input base');
+  }
+}
+
+function restoreBanner(){
+  const b = mediaDB.banner;
+  if(b){
+    document.getElementById('bannerThumb').src = b.thumb || 'thumbs/banner.jpg';
+    document.getElementById('bannerTitle').innerText = b.title || '';
+    document.getElementById('bannerTags').innerText = b.tags || '';
+  }
+}
+
+/* ---------- Utility: load sample data if empty ---------- */
+(function seedIfEmpty(){
+  if(!localStorage.getItem('mediaDB')) saveJSON('mediaDB', mediaDB);
+})();
+
+/* ---------- Helpers ---------- */
+function loadIfExists(key, fallback){ return localStorage.getItem(key) ? JSON.parse(localStorage.getItem(key)) : fallback; }
+
+/* ---------- Restore remembered user ---------- */
+(function restoreRemember(){
+  const rem = localStorage.getItem('remembered');
+  if(rem){
+    // if user exists or admin, set loggedInUser
+    if(rem === ADMIN_EMAIL || localUsers[rem]) loggedInUser = rem;
+  }
+  updateModalView();
+})();
+
+/* ---------- Play helpers for demo items (if user clicks thumbs that are basic objects with base) ---------- */
+function playMovie(name){
+  // convenience: accept base string
+  const item = {type:'movie', base:name, title:name.toUpperCase(), desc:'Description for '+name};
+  playMovieByItem(item);
+}
+
+/* ---------- Utility save helper ---------- */
+function saveJSON(key,obj){ try{ localStorage.setItem(key, JSON.stringify(obj)); }catch(e){ console.warn('save error',e); } }
+function loadJSON(key){ try{ return JSON.parse(localStorage.getItem(key)); }catch(e){ return null; } }
+
+</script>
+</body>
+</html>
